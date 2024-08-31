@@ -38,11 +38,10 @@ function mergeSortHelper(
 ) {
     if (startIdx === endIdx) return;
     const middleIdx = Math.floor((startIdx + endIdx) / 2);
-    mergeSortHelper(auxiliaryArray, startIdx, middleIdx, mainArray, animations);
-    mergeSortHelper(auxiliaryArray, middleIdx, +  1, endIdx, mainArray, animations);
+    mergeSortHelper(mainArray, startIdx, middleIdx, auxiliaryArray, animations);
+    mergeSortHelper(mainArray, middleIdx + 1, endIdx, auxiliaryArray, animations);
     doMerge(mainArray, startIdx, middleIdx, endIdx, auxiliaryArray, animations);
 }
-
 function doMerge(
     mainArray,
     startIdx,

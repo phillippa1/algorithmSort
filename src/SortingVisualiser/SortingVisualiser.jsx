@@ -27,7 +27,13 @@ export default class SortingVisualiser extends React.Component {
 
     mergeSort() {
         const animations = mergeSort(this.state.array);
-        for(let i=0; i< animations.length; i++){
+        const newAnimations = [];
+        for (const animation of animations){
+            newAnimations.push(animation.comparison);
+            newAnimations.push(animation.comparison);
+            newAnimations.push(animation.swap);
+        }
+        for(let i=0; i< animations.length; i++) {
             const {comparison, swap} = animations[i];
             setTimeout(() => {
                 const arrayBars = document.getElementsByClassName('array-bar');
