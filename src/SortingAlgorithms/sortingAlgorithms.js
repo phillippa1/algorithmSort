@@ -61,5 +61,6 @@ function doMerge(
         animations.push([k, auxiliaryArray[j]]);
         mainArray[k++] = auxiliaryArray[j++];
     }
+
 }
 

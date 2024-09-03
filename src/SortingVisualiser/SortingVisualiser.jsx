@@ -33,18 +33,14 @@ export default class SortingVisualiser extends React.Component {
     }
 
     mergeSort() {
-        //gets the merge sort animations
+        // Get the merge sort animations
         const animations = getMergeSortAnimations(this.state.array);
-        //if the animations array is empty don't do anything
-        if(!animations){
-            return;
-        }
-        //loop through the animations and update the array bars accordingly
+        const arrayBars = document.getElementsByClassName('array-bar');
+        // Loop through the animations and update the array bars accordingly
         for (let i = 0; i < animations.length; i++) {
-            const arrayBars = document.getElementsByClassName('array-bar');
-            const isColorChange = i % 3 !==2;
+            const isColorChange = i % 3 !== 2;
             if (isColorChange) {
-                //changes the colour of the array bars (this is the bit that doesn't work)
+                // Changing the color of the bars being compared
                 const [barOneIdx, barTwoIdx] = animations[i];
                 const barOneStyle = arrayBars[barOneIdx].style;
                 const barTwoStyle = arrayBars[barTwoIdx].style;
@@ -52,27 +48,16 @@ export default class SortingVisualiser extends React.Component {
                 setTimeout(() => {
                     barOneStyle.backgroundColor = color;
                     barTwoStyle.backgroundColor = color;
-                }, i * 10);
+                }, i * ANIMATION_SPEED_MS);
             } else {
-                //updates the height of the array bars (this bit works)
+                // Updating the height of the bars to reflect sorted order
                 setTimeout(() => {
                     const [barOneIdx, newHeight] = animations[i];
                     const barOneStyle = arrayBars[barOneIdx].style;
                     barOneStyle.height = `${newHeight}px`;
+                    // After the height update, mark this bar as correctly positioned
+                    barOneStyle.backgroundColor = 'turquoise';
                 }, i * ANIMATION_SPEED_MS);
-            }
-        }
-        //create a new array of animations for the next iteration
-        const newAnimations = [];
-        for (const animation of animations){
-            newAnimations.push(animation.comparison);
-            newAnimations.push(animation.comparison);
-            if (animation.swap){
-                for (const animation of animations){
-                    newAnimations.push(animation.comparison);
-                    newAnimations.push(animation.comparison);
-                    newAnimations.push(animation.swap);
-                }
             }
         }
     }
