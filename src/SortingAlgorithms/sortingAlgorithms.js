@@ -6,6 +6,12 @@ export function getMergeSortAnimations(array) {
     return animations;
 }
 
+export function mergeSort(array) {
+    if (array.length <= 1) return array;
+    mergeSortHelper(array, 0, array.length - 1, array, []);
+    return array;
+}
+
 function mergeSortHelper(
     mainArray,
     startIdx,

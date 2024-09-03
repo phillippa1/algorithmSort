@@ -1,20 +1,24 @@
 import React from 'react';
 import {getMergeSortAnimations} from '../SortingAlgorithms/sortingAlgorithms.js';
 import './SortingVisualiser.css';
+import { mergeSort } from '../SortingAlgorithms/sortingAlgorithms.js';
 
 const   ANIMATION_SPEED_MS = 3;
 
 const NUMBER_OF_ARRAY_BARS = 310;
 
 export default class SortingVisualiser extends React.Component {
+    //initialises the comonent's state
     constructor(props) {
         super(props);
 
         this.state = {
+            //intialises the array with an empty array
             array: [],
         };
     }
 
+    //generates a new array when the page is loaded
     componentDidMount() {
         this.resetArray();
     }
@@ -24,18 +28,23 @@ export default class SortingVisualiser extends React.Component {
         for (let i=0; i< NUMBER_OF_ARRAY_BARS; i++){
             array.push(randomIntFromInterval(5, 730));
         }
+        //updates the component with this array
         this.setState({array});
     }
 
     mergeSort() {
+        //gets the merge sort animations
         const animations = getMergeSortAnimations(this.state.array);
+        //if the animations array is empty don't do anything
         if(!animations){
             return;
         }
+        //loop through the animations and update the array bars accordingly
         for (let i = 0; i < animations.length; i++) {
             const arrayBars = document.getElementsByClassName('array-bar');
             const isColorChange = i % 3 !==2;
             if (isColorChange) {
+                //changes the colour of the array bars (this is the bit that doesn't work)
                 const [barOneIdx, barTwoIdx] = animations[i];
                 const barOneStyle = arrayBars[barOneIdx].style;
                 const barTwoStyle = arrayBars[barTwoIdx].style;
@@ -45,6 +54,7 @@ export default class SortingVisualiser extends React.Component {
                     barTwoStyle.backgroundColor = color;
                 }, i * 10);
             } else {
+                //updates the height of the array bars (this bit works)
                 setTimeout(() => {
                     const [barOneIdx, newHeight] = animations[i];
                     const barOneStyle = arrayBars[barOneIdx].style;
@@ -52,6 +62,7 @@ export default class SortingVisualiser extends React.Component {
                 }, i * ANIMATION_SPEED_MS);
             }
         }
+        //create a new array of animations for the next iteration
         const newAnimations = [];
         for (const animation of animations){
             newAnimations.push(animation.comparison);
@@ -73,16 +84,23 @@ export default class SortingVisualiser extends React.Component {
     bubbleSort() {}
 
     testSortingAlgorithms() {
+        //does 100 iterations of testing sorting algorithms 
         for(let i=0; i< 100; i++){
             const array = [];
             const length = randomIntFromInterval(1,1000);
+            //generates a new array
             for (let i=0; i< length; i++){
                 array.push(randomIntFromInterval(-1000,1000));
             }
-            const javaScriptSortedArray = array.slice().sort((a,b) => a-b);
-            const mergeSortedArray = getMergeSortAnimations(array.slice());//changed
+            const origionalArray = array.slice();
+            //sort the array using JavaScript's built in sort function
+            const javaScriptSortedArray = origionalArray.slice().sort((a,b) => a-b);
+            //sort the array using the merge sort function
+            const mergeSortedArray = mergeSort(array);
+            //compare the two sorted arrays
             console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
         }
+    
     }
 
     render() {
@@ -111,10 +129,13 @@ function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function arraysAreEqual(arrayOne, arrayTwo){
-    if(arrayOne.length !== arrayTwo.length) return false;
-    for(let i=0; i < arrayOne.length; i++){
-        if(arrayOne[i] !== arrayTwo[i]) return false;
+
+//for the testing sorting algorithms
+function arraysAreEqual(arrayOne, arrayTwo) {
+    if (!arrayOne || !arrayTwo) return false; // Check if either array is undefined
+    if (arrayOne.length !== arrayTwo.length) return false;
+    for (let i = 0; i < arrayOne.length; i++) {
+        if (arrayOne[i] !== arrayTwo[i]) return false;
     }
     return true;
 }
