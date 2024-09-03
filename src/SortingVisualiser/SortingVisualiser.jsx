@@ -5,7 +5,7 @@ import { mergeSort } from '../SortingAlgorithms/sortingAlgorithms.js';
 
 const   ANIMATION_SPEED_MS = 3;
 
-const NUMBER_OF_ARRAY_BARS = 310;
+const NUMBER_OF_ARRAY_BARS = 380;
 
 export default class SortingVisualiser extends React.Component {
     //initialises the comonent's state
@@ -30,6 +30,12 @@ export default class SortingVisualiser extends React.Component {
         }
         //updates the component with this array
         this.setState({array});
+
+        // Set all bars to red after the state has been updated
+        const arrayBars = document.getElementsByClassName('array-bar');
+        for (let i = 0; i < arrayBars.length; i++) {
+            arrayBars[i].style.backgroundColor = 'pink';
+        }
     }
 
     mergeSort() {
