@@ -2,6 +2,7 @@ import React from 'react';
 import {getMergeSortAnimations} from '../SortingAlgorithms/sortingAlgorithms.js';
 import './SortingVisualiser.css';
 import { mergeSort } from '../SortingAlgorithms/sortingAlgorithms.js';
+import { getQuickSortAnimations } from '../SortingAlgorithms/sortingAlgorithms.js';
 
 const   ANIMATION_SPEED_MS = 3;
 
@@ -16,6 +17,7 @@ export default class SortingVisualiser extends React.Component {
             //intialises the array with an empty array
             array: [],
             isMergeSortRunning: false,
+            isQuickSortRunning: false,
         };
     }
 
@@ -86,11 +88,36 @@ export default class SortingVisualiser extends React.Component {
         for (let i=0; i< arrayBars.length; i++){
             arrayBars[i].style.backgroundColor = 'pink';
         }
-        this.setState({isMergeSortRunning: false});
+        this.setState({isMergeSortRunning: false, isQuickSortRunning: false});
         this.timeouts = null;
     }
 
-    quickSort() {}
+    quickSort() {
+        this.setState({isQuickSortRunning: true});
+        //get the quick sort animations
+        const animations = getQuickSortAnimations(this.state.array);
+        const arrayBars = document.getElementsByClassName('aray-bar');
+        let timeouts = [];
+        //loop through the animations and update the array bars accordingly
+        for (let i =0; i < animations.lenght; i++) {
+            const [barOneIdx, barTwoIdx] = animations[i];
+            const barOneStyle = arrayBars[barOneIdx].style;
+            const barTwoStyle = arrayBars[barTwoIdx].style;
+            timeouts.push(setTimeout(() =>{
+                // swap the heights pf the two bars
+                const tempHeight = barOneStyle.height;
+                barOneStyle.height = barTwoStyle.height;
+                barTwoStyle.height = tempHeight;
+                // update the colours of the two bars
+                barOneStyle.backgroundColor = 'turquoise';
+                barTwoStyle.backgroundColor = 'turquoise';
+            }, i * ANIMATION_SPEED_MS));
+        }
+        timeouts.push(setTimeout(() => {
+            this.setState({isQuickSortRunning: false});
+        }, animations.length * ANIMATION_SPEED_MS));
+        this.timeouts = timeouts;
+    }
 
     heapSort() {}
 
