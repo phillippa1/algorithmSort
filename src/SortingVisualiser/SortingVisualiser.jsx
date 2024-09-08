@@ -15,6 +15,7 @@ export default class SortingVisualiser extends React.Component {
         this.state = {
             //intialises the array with an empty array
             array: [],
+            isMergeSortRunning: false,
         };
     }
 
@@ -24,12 +25,15 @@ export default class SortingVisualiser extends React.Component {
     }
 
     resetArray() {
+        if(this.state.isMergeSortRunning){
+            this.stopMergeSort();
+        }
         const array = [];
         for (let i=0; i< NUMBER_OF_ARRAY_BARS; i++){
             array.push(randomIntFromInterval(5, 730));
         }
         //updates the component with this array
-        this.setState({array});
+        this.setState({array, isMergeSortRunning: false});
 
         // Set all bars to red after the state has been updated
         const arrayBars = document.getElementsByClassName('array-bar');
@@ -39,9 +43,11 @@ export default class SortingVisualiser extends React.Component {
     }
 
     mergeSort() {
+        this.setState({isMergeSortRunning: true});
         // Get the merge sort animations
         const animations = getMergeSortAnimations(this.state.array);
         const arrayBars = document.getElementsByClassName('array-bar');
+        let timeouts = [];
         // Loop through the animations and update the array bars accordingly
         for (let i = 0; i < animations.length; i++) {
             const isColorChange = i % 3 !== 2;
@@ -51,21 +57,37 @@ export default class SortingVisualiser extends React.Component {
                 const barOneStyle = arrayBars[barOneIdx].style;
                 const barTwoStyle = arrayBars[barTwoIdx].style;
                 const color = i % 3 === 0 ? 'red' : 'turquoise';
-                setTimeout(() => {
+                timeouts.push(setTimeout(() => {
                     barOneStyle.backgroundColor = color;
                     barTwoStyle.backgroundColor = color;
-                }, i * ANIMATION_SPEED_MS);
+                }, i * ANIMATION_SPEED_MS));
             } else {
                 // Updating the height of the bars to reflect sorted order
-                setTimeout(() => {
+                timeouts.push(setTimeout(() => {
                     const [barOneIdx, newHeight] = animations[i];
                     const barOneStyle = arrayBars[barOneIdx].style;
                     barOneStyle.height = `${newHeight}px`;
                     // After the height update, mark this bar as correctly positioned
                     barOneStyle.backgroundColor = 'turquoise';
-                }, i * ANIMATION_SPEED_MS);
+                }, i * ANIMATION_SPEED_MS));
             }
         }
+        timeouts.push(setTimeout(() => {
+            this.setState({isMergeSortRunning: false});
+        }, animations.length * ANIMATION_SPEED_MS));
+        this.timeouts = timeouts;
+    }
+    
+    stopMergeSort(){
+        if (this.timeouts) {
+            this.timeouts.forEach(timeout => clearTimeout(timeout));
+        }
+        const arrayBars = document.getElementsByClassName('array-bar');
+        for (let i=0; i< arrayBars.length; i++){
+            arrayBars[i].style.backgroundColor = 'pink';
+        }
+        this.setState({isMergeSortRunning: false});
+        this.timeouts = null;
     }
 
     quickSort() {}
