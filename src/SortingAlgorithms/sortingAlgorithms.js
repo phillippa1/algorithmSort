@@ -1,15 +1,16 @@
 export function getMergeSortAnimations(array) {
     const animations = [];
-    if (array.length <= 1) return array;
-    const auxiliaryArray = array.slice();
-    mergeSortHelper(array, 0, array.length -1, auxiliaryArray, animations);
+    const arrayCopy = array.slice(); // Create a copy of the original array
+    if (arrayCopy.length <= 1) return array;
+    const auxiliaryArray = arrayCopy.slice();
+    mergeSortHelper(arrayCopy, 0, arrayCopy.length -1, auxiliaryArray, animations);
     return animations;
 }
-
 export function mergeSort(array) {
     if (array.length <= 1) return array;
-    mergeSortHelper(array, 0, array.length - 1, array, []);
-    return array;
+    const sortedArray = array.slice(); // Create a copy of the original array
+    mergeSortHelper(sortedArray, 0, sortedArray.length - 1, sortedArray, []);
+    return sortedArray;
 }
 
 function mergeSortHelper(
@@ -64,7 +65,6 @@ function doMerge(
 
 }
 
-
 //quickSort
 
 export function getQuickSortAnimations(array){
@@ -99,4 +99,3 @@ function partition (array, low, high, animations) {
     [array[i+1], array[high]] = [array[high], array[i+1]];
     return i + 1;
 }
-
