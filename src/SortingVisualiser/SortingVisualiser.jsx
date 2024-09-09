@@ -14,8 +14,7 @@ export default class SortingVisualiser extends React.Component {
         this.state = {
             //intialises the array with an empty array
             array: [],
-            isMergeSortRunning: false,
-            isQuickSortRunning: false,
+            isSortRunning: false,
         };
     }
 
@@ -24,15 +23,15 @@ export default class SortingVisualiser extends React.Component {
         this.resetArray();
     }
     resetArray() {
-        if(this.state.isMergeSortRunning){
-            this.stopMergeSort();
+        if(this.state.isSortRunning){
+            this.stopSort();
         }
         const array = [];
         for (let i=0; i< NUMBER_OF_ARRAY_BARS; i++){
             array.push(randomIntFromInterval(5, 730));
         }
         //updates the component with this array
-        this.setState({array, isMergeSortRunning: false});
+        this.setState({array, isSortRunning: false});
         // Set all bars to red after the state has been updated
         const arrayBars = document.getElementsByClassName('array-bar');
         for (let i = 0; i < arrayBars.length; i++) {
@@ -40,10 +39,10 @@ export default class SortingVisualiser extends React.Component {
         }
     }
     mergeSort() {
-        if (this.state.isMergeSortRunning) {
+        if (this.state.isSortRunning) {
             return;
         }
-        this.setState({ isMergeSortRunning: true });
+        this.setState({ isSortRunning: true });
         const animations = getMergeSortAnimations(this.state.array);
         this.animateMergeSort(animations);
     }
@@ -72,7 +71,7 @@ export default class SortingVisualiser extends React.Component {
         }
         this.timeouts = timeouts;
     }
-    stopMergeSort(){
+    stopSort(){
         if (this.timeouts) {
             this.timeouts.forEach(timeout => clearTimeout(timeout));
         }
@@ -80,14 +79,14 @@ export default class SortingVisualiser extends React.Component {
         for (let i=0; i< arrayBars.length; i++){
             arrayBars[i].style.backgroundColor = 'pink';
         }
-        this.setState({isMergeSortRunning: false});
-        this.setState({isMergeSortRunning: false, isQuickSortRunning: false});
+        this.setState({isSortRunning: false});
+        // this.setState({isSortRunning: false, isQuickSortRunning: false});
         this.timeouts = null;
     }
 
     quickSort() {}
     quickSort() {
-        this.setState({isQuickSortRunning: true});
+        this.setState({isSortRunning: true});
         //get the quick sort animations
         const animations = getQuickSortAnimations(this.state.array);
         const arrayBars = document.getElementsByClassName('array-bar');
@@ -108,7 +107,7 @@ export default class SortingVisualiser extends React.Component {
             }, i * ANIMATION_SPEED_MS));
         }
         timeouts.push(setTimeout(() => {
-            this.setState({isQuickSortRunning: false});
+            this.setState({isSortRunning: false});
         }, animations.length * ANIMATION_SPEED_MS));
         this.timeouts = timeouts;
     }
